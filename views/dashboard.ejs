@@ -1,1 +1,56 @@
-<h1>Dashboard page</h1>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard page</h1>
+
+    <div id="user_name">
+
+    </div>
+
+</body>
+<script>
+
+    var userData = new Object;
+
+    let cookieTokens = document.cookie
+                                .split(';')
+                                .map( cookie => cookie.split('='))
+                                .reduce( (accumulator, [key, value]) => 
+                                ({...accumulator, [key.trim()]: decodeURIComponent(value)}), {} )
+
+    var token = cookieTokens.jwtToken
+
+    async function getUserInfo(){
+
+        var requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'auth-token': token
+            }
+        };
+
+        try{
+            let response = await fetch("http://localhost:8000/api/user/me", requestOptions)
+            var result = await response.json()
+
+            userData = {...result}
+            console.log(userData)
+
+            const html = `<h2>Hi ..${userData.name}</h2>`
+
+            document.querySelector('#user_name').innerHTML = html
+        }catch(err){
+            console.log(err)
+        }
+}
+
+    window.onload = getUserInfo
+
+</script>

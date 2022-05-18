@@ -23,6 +23,14 @@ db.Sequelize = Sequelize
 db.sequelize = sequelize
 
 db.user = require('./models/user-model')(sequelize,DataTypes)
+db.budget = require('./models/budget-model')(sequelize,DataTypes)
+db.category = require('./models/category-model')(sequelize,DataTypes)
+
+db.user.hasMany(db.budget)
+db.budget.belongsTo(db.user)
+
+db.category.hasMany(db.budget)
+db.budget.belongsTo(db.category)
 
 db.sequelize.sync({ force: false })
     .catch( err => console.log(err))
