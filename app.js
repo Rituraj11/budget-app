@@ -9,6 +9,7 @@ const index = require('./routes/index')
 const auth = require('./routes/auth-routes')
 const user = require('./routes/user-routes')
 const budget = require('./routes/budget-routes')
+const category = require('./routes/category-routes')
 
 const app = express()
 
@@ -25,6 +26,7 @@ app.use('/', index)
 app.use('/api/auth', auth)
 app.use('/api/user', user)
 app.use('/api/budget', budget)
+app.use('/api/category', category)
 
 const port = process.env.PORT || 8000
 

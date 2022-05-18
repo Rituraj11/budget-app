@@ -78,7 +78,43 @@ const getAllBudgets = async (req, res) => {
 }
 
 const updateBudget = async (req, res) => {
-    //
+    const budgetId = req.params.id
+
+    try{
+        const budgetExists = await Budget.findOne({
+            where: {
+                id: budgetId,
+                userId: req.user.id
+            },
+            include:[{
+                model: User
+            },{
+                model: Category
+            }]
+        })
+
+        if(budgetExists){
+            let data = {
+                budget_name: req.body.budget_name,
+                budget_amount: req.body.budget_amount,
+                budget_month: req.body.budget_month,
+                userId: req.user.id,
+                categoryId: req.body.categoryId
+            }
+
+            await Budget.update(data,{
+                where: {
+                    id: budgetId
+                }
+            })
+
+            return res.status(201).send({message: 'Budget Updated'})
+        }
+
+        return res.status(404).send({message: 'Budget doesnot exist.'})
+    }catch(err){
+        return res.status(403).send({message: err})
+    }
 }
 
 const deleteBudget = async (req, res) => {

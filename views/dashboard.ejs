@@ -3,19 +3,121 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Dashboard page</h1>
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">YourBudget</span>
+        <span class="navbar-text">
+            Profile
+            <span id="user_name"></span>
+        </span>
+    </nav>
 
-    <div id="user_name">
+    <!-- Button trigger modal -->
+    <div>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addBudgetModal">
+            <i class="fa fa-plus"></i>
+             &nbsp;Add Budget
+        </button>
+    </div>
 
+    <div class="container" >
+        <div class="row" id="budget_cards">
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addBudgetModal" tabindex="-1" role="dialog" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addBudgetModalLabel">Add Budget</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <label for="formGroupBudgetNameInput">Budget Name</label>
+                      <input type="text" class="form-control" id="formGroupBudgetNameInput" placeholder="Enter budget name">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupBudgetAmountInput">Budget Amount (in Lakhs)</label>
+                      <input type="number" class="form-control" id="formGroupBudgetAmountInput" placeholder="Enter amount (eg: 500000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCategory">Category</label>
+                        <select id="inputCategory" class="form-control">
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        <label for="formGroupBudgetMonthInput">Budget Month</label>
+                        <input type="text" class="form-control" id="formGroupBudgetMonthInput" placeholder="Enter month (eg: May)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="addBudget()">Add</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+      <!-- Update Modal -->
+    <div class="modal fade" id="updateBudgetModal" tabindex="-1" role="dialog" aria-labelledby="updateBudgetModalLabel" aria-hidden="true">
+        <div id="updateBudgetModalForm" class="modal-dialog" role="document">
+        <!-- <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="updateBudgetModalLabel">Add Budget</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <label for="formGroupBudgetNameInput">Budget Name</label>
+                      <input type="text" class="form-control" id="formGroupBudgetNameInput" placeholder="Enter budget name">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupBudgetAmountInput">Budget Amount (in Lakhs)</label>
+                      <input type="number" class="form-control" id="formGroupBudgetAmountInput" placeholder="Enter amount (eg: 500000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCategory">Category</label>
+                        <select id="inputCategory" class="form-control">
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        <label for="formGroupBudgetMonthInput">Budget Month</label>
+                        <input type="text" class="form-control" id="formGroupBudgetMonthInput" placeholder="Enter month (eg: May)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="addBudget()">Add</button>
+            </div>
+        </div> -->
+        </div>
     </div>
 
 </body>
 <script>
 
     var userData = new Object;
+    var categoryData = new Array;
 
     let cookieTokens = document.cookie
                                 .split(';')
@@ -24,6 +126,11 @@
                                 ({...accumulator, [key.trim()]: decodeURIComponent(value)}), {} )
 
     var token = cookieTokens.jwtToken
+
+    if(token == undefined){
+        location.replace('/')
+        console.log({'message': 'Access denied'})
+    }
 
     async function getUserInfo(){
 
@@ -41,11 +148,79 @@
             var result = await response.json()
 
             userData = {...result}
-            console.log(userData)
 
-            const html = `<h2>Hi ..${userData.name}</h2>`
+            const html = `<h4>Hi ..${userData.name}</h4>`
 
             document.querySelector('#user_name').innerHTML = html
+
+            var allCategoryHeader = {
+            method: 'GET',
+            headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            };
+
+            let categotyResponse = await fetch("http://localhost:8000/api/category", requestOptions)
+            var categoryResult = await categotyResponse.json()
+
+            categoryData = [...categoryResult]
+
+            if(categoryResult.length == 0){
+                var categoryDropdown = `
+                <option>No category found</option>
+                `;
+                document.querySelector('#inputCategory').innerHTML = categoryDropdown  
+            }else{
+                categoryResult.map( (category, key) => {
+                    categoryDropdown = `
+                    <option id='${key}'>${category.category_name}</option>
+                    `;
+
+                    document.querySelector('#inputCategory').innerHTML += categoryDropdown 
+                });
+
+            }
+
+            var allBudgetheaders = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            };
+
+            let budgetResponse = await fetch("http://localhost:8000/api/budget", allBudgetheaders)
+            var budgetResult = await budgetResponse.json()
+
+
+            if(budgetResult.length == 0){
+                var budgetCard = `
+                <h6>No Budgets found. Please add Budget</h6>
+                `
+            }else{
+
+                budgetResult.map( (budget, key) => {
+                    budgetCard = `
+                    <div class="col-sm-6">
+                        <div class="card card${key}" style="width: 18rem; border: 1px solid black; margin: 10px">
+                            <div class="card-body">
+                                <h5 class="card-title">${budget.budget_name}</h5>
+                                <p class="card-text">Category: ${budget.category.category_name}</p>
+
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#updateBudgetModal" onClick="updateBudgetForm(${budget.id},'${budget.budget_name}','${budget.budget_amount}','${budget.category.category_name}','${budget.budget_month}')">Edit</a>
+
+                                <a href="#" class="btn btn-danger" onClick='deleteBudget(${budget.id})'>Delete</a>
+                            </div>
+                        </div>
+                    </div>`;
+                    
+                    document.querySelector('#budget_cards').innerHTML += budgetCard 
+                })
+            }
+
         }catch(err){
             console.log(err)
         }
@@ -53,4 +228,156 @@
 
     window.onload = getUserInfo
 
+    async function addBudget(){
+        let budget_name = document.querySelector('#formGroupBudgetNameInput').value;
+        let budget_amount = document.querySelector('#formGroupBudgetAmountInput').value;
+        let budget_month = document.querySelector('#formGroupBudgetMonthInput').value;
+        let budget_category = document.querySelector('#inputCategory').value;
+
+        var catId = new Number;
+        categoryData.map( category => {
+            if(category.category_name == budget_category){
+                catId = category.id 
+            } 
+        })
+
+        var newBudgetData = JSON.stringify({
+            "budget_name": budget_name,
+            "budget_amount": budget_amount,
+            "budget_month": budget_month,
+            "categoryId": catId
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token
+                    },
+            body: newBudgetData,
+        }
+
+        try{
+            let response = await fetch("http://localhost:8000/api/budget/", requestOptions)
+            var result = await response.json()
+
+            location.reload()
+        }catch(err){
+            return res.status(400).send({message: err})
+        }
+    }
+
+    async function deleteBudget(budgetId){
+
+        console.log(budgetId)
+        try{
+            var requestOptions = {
+            method: 'DELETE',
+            headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            };
+
+            await fetch(`http://localhost:8000/api/budget/${budgetId}`, requestOptions)
+
+            location.reload()
+        }catch(err){
+            return res.status(400).send({message: err})
+        }
+    }
+
+
+    function updateBudgetForm(budgetId, budgetName, budgetAmount, categoryName, budgetMonth){
+
+        let updateModal = `
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="updateBudgetModalLabel">Update Budget</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <label for="formGroupBudgetNameInput">Budget Name</label>
+                      <input type="text" class="form-control" id="formGroupUpdateBudgetNameInput" value="${budgetName}" placeholder="Enter budget name">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupBudgetAmountInput">Budget Amount (in Lakhs)</label>
+                      <input type="number" class="form-control" id="formGroupUpdateBudgetAmountInput" value="${budgetAmount}" placeholder="Enter amount (eg: 500000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCategory">Category</label>
+                        <select id="inputUpdateCategory" class="form-control">
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        <label for="formGroupBudgetMonthInput">Budget Month</label>
+                        <input type="text" class="form-control" id="formGroupUpdateBudgetMonthInput" value="${budgetMonth}" placeholder="Enter month (eg: May)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="updateBudget(${budgetId})">Add</button>
+            </div>
+        </div>
+        `;
+
+        document.querySelector('#updateBudgetModalForm').innerHTML = updateModal
+
+        categoryData.map( (category, key) => {
+            categoryDropdown = `
+            <option id='${key}'>${category.category_name}</option>
+            `;
+
+            document.querySelector('#inputUpdateCategory').innerHTML += categoryDropdown 
+        });
+
+    }
+
+
+    async function updateBudget(budgetId){
+        let budget_name = document.querySelector('#formGroupUpdateBudgetNameInput').value;
+        let budget_amount = document.querySelector('#formGroupUpdateBudgetAmountInput').value;
+        let budget_month = document.querySelector('#formGroupUpdateBudgetMonthInput').value;
+        let budget_category = document.querySelector('#inputUpdateCategory').value;
+
+        var catId = new Number;
+        categoryData.map( category => {
+            if(category.category_name == budget_category){
+                catId = category.id 
+            } 
+        })
+
+        var updateBudgetData = JSON.stringify({
+            "budget_name": budget_name,
+            "budget_amount": budget_amount,
+            "budget_month": budget_month,
+            "categoryId": catId
+        });
+
+        var requestOptions = {
+            method: 'PUT',
+            headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token
+                    },
+            body: updateBudgetData,
+        }
+
+        try{
+            let response = await fetch(`http://localhost:8000/api/budget/${budgetId}`, requestOptions)
+            var result = await response.json()
+
+            location.reload()
+        }catch(err){
+            return res.status(400).send({message: err})
+        }
+    }
 </script>
