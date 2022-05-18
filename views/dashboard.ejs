@@ -204,15 +204,17 @@
 
                 budgetResult.map( (budget, key) => {
                     budgetCard = `
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="card card${key}" style="width: 18rem; border: 1px solid black; margin: 10px">
                             <div class="card-body">
                                 <h5 class="card-title">${budget.budget_name}</h5>
                                 <p class="card-text">Category: ${budget.category.category_name}</p>
 
-                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#updateBudgetModal" onClick="updateBudgetForm(${budget.id},'${budget.budget_name}','${budget.budget_amount}','${budget.category.category_name}','${budget.budget_month}')">Edit</a>
+                                <a href="http://localhost:8000/budget/${budget.id}" class="btn btn-success" style="text-decoration:none; color:#fff">View</a>
 
-                                <a href="#" class="btn btn-danger" onClick='deleteBudget(${budget.id})'>Delete</a>
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#updateBudgetModal" onClick="updateBudgetForm(${budget.id},'${budget.budget_name}','${budget.budget_amount}','${budget.category.category_name}','${budget.budget_month}')" style="text-decoration:none; color:#fff">Edit</a>
+
+                                <a class="btn btn-danger" onClick='deleteBudget(${budget.id})' style="text-decoration:none; color:#fff">Delete</a>
                             </div>
                         </div>
                     </div>`;
