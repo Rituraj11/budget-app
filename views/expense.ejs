@@ -1,0 +1,274 @@
+<head>
+    <title>Expense</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
+  
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.js"></script>
+
+</head>
+<body>
+    <!-- <h1>Expense page</h1> -->
+    <nav class="navbar navbar-light bg-light">
+        <span id="budget-name" class="navbar-brand mb-0 h1"><p>Budget name</p></span>
+        <span class="navbar-text">
+            Profile
+            <span id="user_name"></span>
+        </span>
+    </nav>
+    <div>
+        <div style="display: flex;">
+            <div>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addIncomeModal">
+                    <i class="fa fa-plus"></i>
+                     &nbsp;Add Income
+                </button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#addExpenseModal">
+                    <i class="fa fa-plus"></i>
+                     &nbsp;Add Expense
+                </button>
+            </div>
+        </div>
+        <div class="container" style="margin-top: 30px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="expense-table table-responsive">
+                        <!-- <h4>Data table</h4> -->
+                        <table class="table" id="budgetTable">
+                            <thead>
+                            <tr>
+                                <!-- <th scope="col">Id</th> -->
+                                <th scope="col">Expense Name</th>
+                                <th scope="col">Income</th>
+                                <th scope="col">Expense</th>
+                                <th scope="col">Spent Date</th>
+                                <!-- <th scope="col">Action</th> -->
+                            </tr>
+                            </thead>
+                            <!-- <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            
+                            
+                            </tbody> -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h4>Expense total calculations</h4>
+        </div>
+    </div>
+
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addIncomeModal" tabindex="-1" role="dialog" aria-labelledby="addIncomeModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addIncomeModal">Add Income</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <label for="formGroupBudgetNameInput">Income Name</label>
+                      <input type="text" class="form-control" id="formGroupIncomeNameInput" placeholder="Enter income name">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupBudgetAmountInput">Income Amount (in ₹)</label>
+                      <input type="number" class="form-control" id="formGroupIncomeAmountInput" placeholder="Enter amount (eg: 500000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupBudgetMonthInput">Spend Date</label>
+                        <input type="date" class="form-control" id="formGroupIncomeDateInput" placeholder="Enter date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="addExpenseModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addExpenseModal">Add Expense</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <label for="formGroupBudgetNameInput">Expense Name</label>
+                      <input type="text" class="form-control" id="formGroupExpenseNameInput" placeholder="Enter expense name">
+                    </div>
+                    <div class="form-group">
+                      <label for="formGroupBudgetAmountInput">Budget Amount (in ₹)</label>
+                      <input type="number" class="form-control" id="formGroupExpenseAmountInput" placeholder="Enter amount (eg: 500000)">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupBudgetMonthInput">Spend Date</label>
+                        <input type="date" class="form-control" id="formGroupExpenseDateInput" placeholder="Enter date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    var userData = new Object;
+    var budgetData = new Object;
+
+    let cookieTokens = document.cookie
+                                .split(';')
+                                .map( cookie => cookie.split('='))
+                                .reduce( (accumulator, [key, value]) => 
+                                ({...accumulator, [key.trim()]: decodeURIComponent(value)}), {} )
+
+    var token = cookieTokens.jwtToken
+
+    if(token == undefined){
+        location.replace('/')
+        console.log({'message': 'Access denied'})
+    }
+
+    async function getUserInfo(){
+        var requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'auth-token': token
+            }
+        };
+
+        try{
+            let response = await fetch("http://localhost:8000/api/user/me", requestOptions)
+            var result = await response.json()
+
+            userData = {...result}
+
+            const html = `<h4>Hi ..${userData.name}</h4>`
+
+            document.querySelector('#user_name').innerHTML = html
+
+            var urlParam = window.location.search.split('?').slice(1)
+
+            if(urlParam.length == 0){
+                location.replace('/')
+                console.log({'message': 'Access denied'})
+            }
+
+            budgetIdData = urlParam.map( params => params.split('='))
+                        .reduce((accumulator, [key, value]) => 
+                                ({...accumulator, [key.trim()]: decodeURIComponent(value)}), {})
+            
+            var budgetheaders = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            };
+
+            let budgetResponse = await fetch(`http://localhost:8000/api/budget/${budgetIdData.id}`, budgetheaders)
+            var budgetResult = await budgetResponse.json()
+
+            budgetData = {...budgetResult}
+
+            console.log(budgetData)
+
+            var budgetNameHTML = `<p>${budgetResult.budget_name}</p>`;
+
+            document.querySelector('#budget-name').innerHTML = budgetNameHTML 
+
+            getAllExpense(budgetResult.id)
+
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    window.onload = getUserInfo
+
+    async function getAllExpense(budgetId){
+        var expenseRequestData = {
+            method: 'GET',
+            headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+        };
+
+        let response = await fetch(`http://localhost:8000/api/expense/${budgetId}`, expenseRequestData)
+        var expenseData = await response.json()
+
+        
+            console.log(expenseData);
+            $('#budgetTable').DataTable({
+                data: expenseData,
+                columns:[
+                    // { data: "id" },
+                    { data: "expense_name" },
+                    { data: "income" },
+                    { data: "expense" },
+                    { data: "spend_date" }
+                ],
+                buttons: [
+                    'csv','copy', 'excel', 'pdf'
+                ],
+                responsive: true,
+                lengthChange: false,
+                autoWidth: false
+            })
+    }
+</script>

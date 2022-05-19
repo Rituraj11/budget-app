@@ -13,8 +13,8 @@ router.get('/dashboard',(req, res) => {
     res.render('dashboard')
 })
 
-router.get('/budget/:id',(req, res) => {
-    res.render('budget')
+router.get('/budget',(req, res) => {
+    res.render('expense')
 })
 
 module.exports = router
