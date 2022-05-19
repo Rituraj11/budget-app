@@ -63,6 +63,14 @@
                     <div class="form-group">
                         <label for="formGroupBudgetMonthInput">Budget Month</label>
                         <input type="text" class="form-control" id="formGroupBudgetMonthInput" placeholder="Enter month (eg: May)">
+                        
+                        <!-- Add -- list="months" -- in input field -->
+                        <!-- <datalist id="months">
+                            <option value="January">
+                            <option value="February">
+                            <option value="March">
+                        </datalist> -->
+                        
                     </div>
                 </form>
             </div>
@@ -325,7 +333,7 @@
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="updateBudget(${budgetId})">Add</button>
+            <button type="button" class="btn btn-primary" onclick="updateBudget(${budgetId})">Udpate</button>
             </div>
         </div>
         `;
