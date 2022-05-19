@@ -39,18 +39,25 @@
     </nav>
     <div>
         <div class="container" style="margin-top: 15px;">
-        <div style="display: flex;">
-            <div>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addIncomeModal">
-                    <i class="fa fa-plus"></i>
-                     &nbsp;Add Income
-                </button>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex;">
+                <div>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addIncomeModal">
+                        <i class="fa fa-plus"></i>
+                         &nbsp;Add Income
+                    </button>
+                </div>
+                <div style="margin-left: 15px;">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#addExpenseModal">
+                        <i class="fa fa-plus"></i>
+                         &nbsp;Add Expense
+                    </button>
+                </div>
             </div>
-            <div style="margin-left: 15px;">
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#addExpenseModal">
-                    <i class="fa fa-plus"></i>
-                     &nbsp;Add Expense
-                </button>
+
+            <div id="share-section">
+                <!-- <input type="text" value="Hello World" id="myInput" disabled>
+                <button onclick="">Copy text</button> -->
             </div>
         </div>
         <a href="/dashboard" style="float: right;">Back</a>
@@ -168,18 +175,29 @@
 
     var token = cookieTokens.jwtToken
 
-    if(token == undefined){
+    var paramArr = window.location.search.split('?').slice(1)[0].split('&')
+
+    var paramsObj = paramArr.map( data => data.split('='))
+            .reduce( (acc, [key, value]) => ({...acc, [key.trim()]: decodeURIComponent(value)}),{})
+
+
+    console.log(paramsObj)
+    var uId = paramsObj.uid      
+
+    if(token == undefined && paramsObj.sharing == false){
         location.replace('/')
         console.log({'message': 'Access denied'})
     }
 
     async function getUserInfo(){
+        console.log(uId)
         var requestOptions = {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'auth-token': token
+                'auth-token': token,
+                'uid': uId
             }
         };
 
@@ -209,7 +227,8 @@
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'auth-token': token
+                    'auth-token': token,
+                    'uid': uId
                 }
             };
 
@@ -218,11 +237,18 @@
 
             budgetData = {...budgetResult}
 
+            var shareUrl = `http://localhost:8000/budget?id=${budgetResult.id}&uid=${userData.id}&sharing=true`;
+            var clipboardHTML = `
+                <input type="text" value="${shareUrl}" id="share-url-field" disabled>
+                <button class="btn btn-info btn-sm" onclick="copyShareUrl()">Copy text</button>
+            `;
+
             var budgetNameHTML = `<p>${budgetResult.budget_name}</p>`;
             var budgetTotalHTML = `<h3>Total Budget: <span>₹ ${budgetResult.budget_amount}</span></h3>`;
 
             document.querySelector('#budget-name').innerHTML = budgetNameHTML
             document.querySelector('#budget-total').innerHTML = budgetTotalHTML 
+            document.querySelector('#share-section').innerHTML = clipboardHTML
 
             var expenseData = await getAllExpense(budgetResult.id)
 
@@ -263,7 +289,8 @@
             headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'auth-token': token
+                    'auth-token': token,
+                    'uid': uId
                 }
         };
 
@@ -279,7 +306,8 @@
                 { data: "income" },
                 { data: "expense" },
                 { data: "spend_date" }
-            ]
+            ],
+            responsive: true
         })
 
         return expenseData
@@ -304,7 +332,8 @@
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'auth-token': token
+                    'auth-token': token,
+                    'uid': uId
                 },
                 body: incomeData
             };
@@ -336,7 +365,8 @@
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'auth-token': token
+                    'auth-token': token,
+                    'uid': uId
                 },
                 body: expenseData
             };
@@ -349,4 +379,9 @@
         }
     }
 
+    function copyShareUrl(){
+        let shareUrl = document.querySelector('#share-url-field').value
+        navigator.clipboard.writeText(shareUrl)
+        alert('copied')
+    }
 </script>

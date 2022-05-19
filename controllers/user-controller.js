@@ -6,7 +6,7 @@ const Category = db.category
 
 const userData = async (req, res) => {
     var userId = req.user.id
-
+    
     try{
 
         var userExists = await User.findOne({

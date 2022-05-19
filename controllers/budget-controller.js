@@ -54,6 +54,8 @@ const getBudget = async (req, res) => {
 }
 
 const getAllBudgets = async (req, res) => {
+
+    console.log(req.user)
     try{
         const result = await Budget.findAll({
             where:{
