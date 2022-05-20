@@ -55,28 +55,60 @@ const getBudget = async (req, res) => {
 
 const getAllBudgets = async (req, res) => {
 
-    console.log(req.user)
-    try{
-        const result = await Budget.findAll({
-            where:{
-                userId: req.user.id
-            },
-            include: [{
-                model: User
-            },{
-                model: Category
-            }]
-        })
+    const { size, page} = req.query;
 
-        if(result){
-            return res.status(200).send(result)
+    if(size !== undefined && page !== undefined){
+        const limit = Number(size) 
+        const offset = Number(page) * limit
+
+        try{
+            const result = await Budget.findAll({
+                where:{
+                    userId: req.user.id
+                },
+                limit: limit,
+                offset: offset,
+                include: [{
+                    model: User
+                },{
+                    model: Category
+                }]
+            })
+    
+            if(result){
+                return res.status(200).send(result)
+            }
+    
+            return res.status(404).send({message: 'Budget not found'})
+    
+        }catch(err){
+            return res.send({message: err})
         }
+    }else{
 
-        return res.status(404).send({message: 'Budget not found'})
-
-    }catch(err){
-        return res.send({message: err})
+        try{
+            const result = await Budget.findAll({
+                where:{
+                    userId: req.user.id
+                },
+                include: [{
+                    model: User
+                },{
+                    model: Category
+                }]
+            })
+    
+            if(result){
+                return res.status(200).send(result)
+            }
+    
+            return res.status(404).send({message: 'Budget not found'})
+    
+        }catch(err){
+            return res.send({message: err})
+        }
     }
+
 }
 
 const updateBudget = async (req, res) => {
