@@ -12,11 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         income: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: true,
+            defaultValue: 0
         },
         expense:{
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: true,
+            defaultValue: 0
         },
         spend_date:{
             type: DataTypes.DATEONLY,
