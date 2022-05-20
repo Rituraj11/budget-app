@@ -12,6 +12,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <title>Dashboard</title>
+
+    <style>
+        .pagination-list{
+            padding: 4px 10px;
+            /* border: 1px solid grey; */
+            background-color: lightseagreen;
+            text-decoration: none;
+            color: white;
+        }
+
+        .pagination-list:hover{
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-light bg-light">
@@ -33,6 +47,9 @@
     <div class="container" >
         <div class="row" id="budget_cards">
         </div>
+    </div>
+
+    <div id="paginate-section" style="display: flex; justify-content: center;">
     </div>
 
     <!-- Add Modal -->
@@ -135,6 +152,12 @@
 
     var token = cookieTokens.jwtToken
 
+    var paramArr = window.location.search.split('?').slice(1)[0].split('&')
+
+    var paramsObj = paramArr.map( data => data.split('='))
+            .reduce( (acc, [key, value]) => ({...acc, [key.trim()]: decodeURIComponent(value)}),{})
+
+
     if(token == undefined){
         location.replace('/')
         console.log({'message': 'Access denied'})
@@ -203,14 +226,16 @@
             let budgetResponse = await fetch("http://localhost:8000/api/budget", allBudgetheaders)
             var budgetResult = await budgetResponse.json()
 
-
             if(budgetResult.length == 0){
                 var budgetCard = `
                 <h6>No Budgets found. Please add Budget</h6>
                 `
             }else{
 
-                budgetResult.map( (budget, key) => {
+                let paginatedBudgetList = await fetch(`http://localhost:8000/api/budget?size=${paramsObj.size}&page=${paramsObj.page}`, allBudgetheaders)
+                var paginatedBudgetResult = await paginatedBudgetList.json()
+
+                paginatedBudgetResult.map( (budget, key) => {
                     budgetCard = `
                     <div class="col-sm-4">
                         <div class="card card${key}" style="width: 18rem; border: 1px solid black; margin: 10px">
@@ -227,8 +252,15 @@
                         </div>
                     </div>`;
                     
-                    document.querySelector('#budget_cards').innerHTML += budgetCard 
+                    document.querySelector('#budget_cards').innerHTML += budgetCard                     
                 })
+
+                var paginationLoop = Math.ceil(budgetResult.length / paramsObj.size)
+                for(var i = 1; i <= paginationLoop; i++){
+                        var paginateListHTML = `<div style="padding: 0 6px; margin-top: 50px;"><a class="pagination-list" href="http://localhost:8000/dashboard?size=4&page=${i - 1}">${i}</a></div>`;
+
+                        document.querySelector('#paginate-section').innerHTML += paginateListHTML
+                }
             }
 
         }catch(err){

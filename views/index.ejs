@@ -234,16 +234,7 @@
             })
             .then(result => {
                 alert('login success')
-                window.location.replace("/dashboard");
+                window.location.replace("/dashboard?size=4&page=0");
             })
-
-        // try{
-        //     let response = await fetch("http://localhost:8000/api/auth/login", requestOptions)
-        //     var result = await response.json()
-
-        //     alert('login successful')
-        // }catch(err){
-        //     console.log(err)
-        // }
     }
 </script>
