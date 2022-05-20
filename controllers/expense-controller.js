@@ -13,7 +13,7 @@ const addIncome = async (req, res) => {
         expense_name: req.body.expense_name,
         income: req.body.amount,
         spend_date: req.body.spend_date,
-        budgetId: 2
+        budgetId: req.body.budgetId
     }
 
     try{
@@ -34,7 +34,7 @@ const addExpense = async (req, res) => {
         expense_name: req.body.expense_name,
         expense: req.body.amount,
         spend_date: req.body.spend_date,
-        budgetId: 2
+        budgetId: req.body.budgetId
     }
 
     try{
