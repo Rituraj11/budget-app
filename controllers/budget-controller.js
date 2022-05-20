@@ -55,7 +55,8 @@ const getBudget = async (req, res) => {
 
 const getAllBudgets = async (req, res) => {
 
-    const { size, page} = req.query;
+    console.log(req.query)
+    const { size, page, filter} = req.query;
 
     if(size !== undefined && page !== undefined){
         const limit = Number(size) 
@@ -64,8 +65,10 @@ const getAllBudgets = async (req, res) => {
         try{
             const result = await Budget.findAll({
                 where:{
-                    userId: req.user.id
+                    userId: req.user.id,
+                    budget_month: filter
                 },
+                order: [['createdAt', 'DESC']],
                 limit: limit,
                 offset: offset,
                 include: [{
@@ -89,8 +92,10 @@ const getAllBudgets = async (req, res) => {
         try{
             const result = await Budget.findAll({
                 where:{
-                    userId: req.user.id
+                    userId: req.user.id,
+                    budget_month: filter
                 },
+                order: [['createdAt', 'DESC']],
                 include: [{
                     model: User
                 },{

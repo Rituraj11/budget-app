@@ -37,11 +37,34 @@
     </nav>
 
     <!-- Button trigger modal -->
-    <div>
-        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addBudgetModal">
-            <i class="fa fa-plus"></i>
-             &nbsp;Add Budget
-        </button>
+    <div style="display: flex; justify-content: space-between;">
+        <div>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addBudgetModal">
+                <i class="fa fa-plus"></i>
+                 &nbsp;Add Budget
+            </button>
+        </div>
+        <div>
+            <div class="input-group mb-3">
+                <select id="monthFIlterInput" style="padding-left: 10px; border-radius: 5px">
+                    <option id="January-option" value="January">January</option>
+                    <option id="February-option" value="February">February</option>
+                    <option id="March-option" value="March">March</option>
+                    <option id="April-option" value="April">April</option>
+                    <option id="May-option" value="May">May</option>
+                    <option id="June-option" value="June">June</option>
+                    <option id="July-option" value="July">July</option>
+                    <option id="August-option" value="August">August</option>
+                    <option id="September-option" value="September">September</option>
+                    <option id="October-option" value="October">October</option>
+                    <option id="November-option" value="November">November</option>
+                    <option id="December-option" value="December">December</option>
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" onclick="filterMonth()">Filter</button>
+                </div>
+              </div>
+        </div>
     </div>
 
     <div class="container" >
@@ -79,15 +102,20 @@
                       </div>
                     <div class="form-group">
                         <label for="formGroupBudgetMonthInput">Budget Month</label>
-                        <input type="text" class="form-control" id="formGroupBudgetMonthInput" placeholder="Enter month (eg: May)">
-                        
-                        <!-- Add -- list="months" -- in input field -->
-                        <!-- <datalist id="months">
-                            <option value="January">
-                            <option value="February">
-                            <option value="March">
-                        </datalist> -->
-                        
+                        <select id="formGroupBudgetMonthInput" class="form-control">
+                            <option id="January-option" value="January">January</option>
+                            <option id="February-option" value="February">February</option>
+                            <option id="March-option" value="March">March</option>
+                            <option id="April-option" value="April">April</option>
+                            <option id="May-option" value="May">May</option>
+                            <option id="June-option" value="June">June</option>
+                            <option id="July-option" value="July">July</option>
+                            <option id="August-option" value="August">August</option>
+                            <option id="September-option" value="September">September</option>
+                            <option id="October-option" value="October">October</option>
+                            <option id="November-option" value="November">November</option>
+                            <option id="December-option" value="December">December</option>
+                        </select> 
                     </div>
                 </form>
             </div>
@@ -144,6 +172,8 @@
     var userData = new Object;
     var categoryData = new Array;
 
+    var currentMonth = new Date().toLocaleString('default', {month: 'long'})
+
     let cookieTokens = document.cookie
                                 .split(';')
                                 .map( cookie => cookie.split('='))
@@ -156,7 +186,6 @@
 
     var paramsObj = paramArr.map( data => data.split('='))
             .reduce( (acc, [key, value]) => ({...acc, [key.trim()]: decodeURIComponent(value)}),{})
-
 
     if(token == undefined){
         location.replace('/')
@@ -223,16 +252,17 @@
                 }
             };
 
-            let budgetResponse = await fetch("http://localhost:8000/api/budget", allBudgetheaders)
+            let budgetResponse = await fetch(`http://localhost:8000/api/budget?filter=${paramsObj.filter}`, allBudgetheaders)
             var budgetResult = await budgetResponse.json()
 
             if(budgetResult.length == 0){
                 var budgetCard = `
                 <h6>No Budgets found. Please add Budget</h6>
                 `
+                document.querySelector('#budget_cards').innerHTML = budgetCard  
             }else{
 
-                let paginatedBudgetList = await fetch(`http://localhost:8000/api/budget?size=${paramsObj.size}&page=${paramsObj.page}`, allBudgetheaders)
+                let paginatedBudgetList = await fetch(`http://localhost:8000/api/budget?size=${paramsObj.size}&page=${paramsObj.page}&filter=${paramsObj.filter}`, allBudgetheaders)
                 var paginatedBudgetResult = await paginatedBudgetList.json()
 
                 paginatedBudgetResult.map( (budget, key) => {
@@ -257,7 +287,7 @@
 
                 var paginationLoop = Math.ceil(budgetResult.length / paramsObj.size)
                 for(var i = 1; i <= paginationLoop; i++){
-                        var paginateListHTML = `<div style="padding: 0 6px; margin-top: 50px;"><a class="pagination-list" href="http://localhost:8000/dashboard?size=4&page=${i - 1}">${i}</a></div>`;
+                        var paginateListHTML = `<div style="padding: 0 6px; margin-top: 50px;"><a class="pagination-list" href="http://localhost:8000/dashboard?size=4&page=${i - 1}&filter=${paramsObj.filter}">${i}</a></div>`;
 
                         document.querySelector('#paginate-section').innerHTML += paginateListHTML
                 }
@@ -382,7 +412,6 @@
 
     }
 
-
     async function updateBudget(budgetId){
         let budget_name = document.querySelector('#formGroupUpdateBudgetNameInput').value;
         let budget_amount = document.querySelector('#formGroupUpdateBudgetAmountInput').value;
@@ -422,4 +451,14 @@
             return res.status(400).send({message: err})
         }
     }
+
+    function filterMonth(){
+        console.log('test clicked')
+        console.log(document.querySelector('#monthFIlterInput').value)
+        var filteredMonth = document.querySelector('#monthFIlterInput').value
+
+        window.location.replace(`http://localhost:8000/dashboard?size=4&page=0&filter=${filteredMonth}`);
+    }
+
+
 </script>
