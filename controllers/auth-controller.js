@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const cookieParser = require('cookie-parser')
 const joi = require('joi')
 const jwt = require('jsonwebtoken')
 
@@ -80,6 +81,11 @@ const login = async (req, res) => {
     }
 }
 
+const logout = (req,res) => {
+
+    return res.status(200).cookie('jwtToken', { expires: Date.now()}).send({message: 'Logout successful'})
+}
+
 
 const validateRegister = (user) => {
     const schema = joi.object({
@@ -100,4 +106,4 @@ const validateLogin = (user) => {
     return schema.validate(user)
 }
 
-module.exports = { register, login }
+module.exports = { register, login, logout }

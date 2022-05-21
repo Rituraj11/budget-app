@@ -31,16 +31,20 @@
         td:first-child + td + td:before {
             content: "- ₹ ";
         }
+        a{
+            margin: 0 5px;
+        }
     </Style>
 </head>
 <body>
     <!-- <h1>Expense page</h1> -->
     <nav class="navbar navbar-light bg-light">
-        <span id="budget-name" class="navbar-brand mb-0 h1"><p>Budget name</p></span>
-        <span class="navbar-text">
-            Profile
-            <span id="user_name"></span>
-        </span>
+        <span id="budget-name" class="navbar-brand mb-0 h1" ><p>Budget name</p></span>
+        <span><a href="http://localhost:8000/dashboard?size=4&page=0&filter=May">Dashboard</a><a href="#" onclick="logout()">Logout</a></span>
+        <!-- <span class="navbar-text"> -->
+            <!-- Profile -->
+            <!-- <span id="user_name"></span> -->
+        <!-- </span> -->
     </nav>
     <div>
         <div class="container" style="margin-top: 15px;">
@@ -215,7 +219,7 @@
 
             const html = `<h4>Hi ..${userData.name}</h4>`
 
-            document.querySelector('#user_name').innerHTML = html
+            // document.querySelector('#user_name').innerHTML = html
 
             var urlParam = window.location.search.split('?').slice(1)
 
@@ -482,5 +486,36 @@
             timeout: 1000,
             text: 'Share URL Copied',
         }).show();
+    }
+
+    async function logout(){
+        try{
+            var requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token
+                    }
+            }
+            let response = await fetch('http://localhost:8000/api/auth/logout', requestOptions)
+
+            if(response.ok){
+                new Noty({
+                    type: 'success',
+                    layout: 'topRight',
+                    theme: 'sunset',
+                    timeout: 700,
+                    text: 'Logout successful',
+                }).show();
+                
+            }
+
+            setTimeout( () => {
+                location.replace('/')
+            }, 1000)
+        }catch(err){
+            console.log(err)
+        }
     }
 </script>
