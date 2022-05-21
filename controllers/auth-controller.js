@@ -7,10 +7,11 @@ const db = require('../dbconfig')
 
 const User = db.user
 
+// User sign up
 const register = async (req, res) => {
     try{
         const { error } = validateRegister(req.body)
-        if (error) return res.status(422).json({err_msg: error.details[0].message})
+        if (error) return res.status(422).json({message: error.details[0].message})
 
         const salt = await bcrypt.genSalt(Number(process.env.SALT))
 
@@ -35,17 +36,17 @@ const register = async (req, res) => {
             return res.status(201).json(result)
         }
 
-        return res.status(422).json({err_msg: 'Already a user'})
+        return res.status(422).json({message: 'Already a user'})
     }catch(err){
-        console.log(err)
-        res.send({err_msg: err})
+        return res.status(400).json({message: err})
     }
 }
 
+// User Login
 const login = async (req, res) => {
     try{
         const { error } = validateLogin(req.body)
-        if (error) return res.status(400).json(error.details[0].message)
+        if (error) return res.status(400).json({message:error.details[0].message})
 
         const userExists = await User.findOne({
             where: {
@@ -75,8 +76,7 @@ const login = async (req, res) => {
         return res.status(404).json({message: 'User doesnot exists.'})
 
     }catch(err){
-        console.log(err)
-        res.send({message: err})
+        return res.status(400).json({message: err})
     }
 }
 

@@ -13,7 +13,10 @@
     <!-- Then include bootstrap js -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-
+    <!-- Noty JS urls -->
+    <script src="https://cdn.tutorialjinni.com/noty/3.1.4/noty.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.tutorialjinni.com/noty/3.1.4/noty.css" />
+   
 </head>
 <body>
     <div class="container">    
@@ -32,12 +35,12 @@
                                     
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="login_email" type="email" class="form-control" name="email" value="" placeholder="email">                                        
+                            <input id="login_email" type="email" class="form-control" name="email" value="" placeholder="email" required>                                        
                         </div>
                                 
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="login_pass" type="password" class="form-control" name="password" placeholder="password">
+                            <input id="login_pass" type="password" class="form-control" name="password" placeholder="password" required>
                         </div>
                                     
 
@@ -101,42 +104,35 @@
                         <div class="form-group">
                             <label for="firstname" class="col-md-3 control-label">Name</label>
                             <div class="col-md-9">
-                                <input type="text" id="signup_name" class="form-control" name="name" placeholder="Name">
+                                <input type="text" id="signup_name" class="form-control" name="name" placeholder="Name" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email" class="col-md-3 control-label">Email</label>
                             <div class="col-md-9">
-                                <input type="text"id="signup_email"  class="form-control" name="email" placeholder="Email Address">
+                                <input type="text"id="signup_email"  class="form-control" name="email" placeholder="Email Address" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="password" class="col-md-3 control-label">Phone</label>
                             <div class="col-md-9">
-                                <input type="tel" id="signup_phone" class="form-control" name="phone" placeholder="Phone no. (eg: 9835278302)">
+                                <input type="tel" id="signup_phone" class="form-control" name="phone" placeholder="Phone no. (eg: 9835278302)" required>
                             </div>
                         </div>
-
-                        <!-- <div class="form-group">
-                            <label for="lastname" class="col-md-3 control-label">Last Name</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="lastname" placeholder="Last Name">
-                            </div>
-                        </div> -->
 
                         <div class="form-group">
                             <label for="password" class="col-md-3 control-label">Password</label>
                             <div class="col-md-9">
-                                <input type="password" id="signup_pass" class="form-control" name="password" placeholder="Password">
+                                <input type="password" id="signup_pass" class="form-control" name="password" placeholder="Password" required>
                             </div>
                         </div>
                                     
                         <div class="form-group">
                             <label for="icode" class="col-md-3 control-label">Total Income</label>
                             <div class="col-md-9">
-                                <input type="text" id="signup_income" class="form-control" name="total-income" placeholder="In Lakhs (eg: 500000)">
+                                <input type="text" id="signup_income" class="form-control" name="total-income" placeholder="In Lakhs (eg: 500000)" required>
                             </div>
                         </div>
 
@@ -170,6 +166,7 @@
 
 <script>
 
+// Signup function
     async function userSignup(){
 
         let name = document.querySelector('#signup_name').value;
@@ -178,64 +175,152 @@
         let password = document.querySelector('#signup_pass').value;
         let income = document.querySelector('#signup_income').value;
 
-        var data = JSON.stringify({
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "password": password,
-        "total_income": income
-        });
 
-        var requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: data
-        };
+        if(name != '' && email != '' && phone != '' && password != '' && income != ''){
+            
+            var data = JSON.stringify({
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "password": password,
+                "total_income": income
+            });
 
-        try{
-            let response = await fetch("http://localhost:8000/api/auth//auth/register", requestOptions)
-            var result = await response.json()
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            };
 
-            alert('register successful')
-        }catch(err){
-            console.log(err)
+            try{
+
+                let response = await fetch("http://localhost:8000/api/auth/register", requestOptions)
+                var result = await response.json()
+
+                if(!result.message){
+
+                    new Noty({
+                        type: 'success',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'register successful',
+                    }).show();
+
+                    setTimeout( () => {
+                        window.location.replace(`http://localhost:8000/`);
+                    }, 1000)
+                }else{
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: result.message,
+                    }).show();
+
+                    setTimeout( () => {
+                        window.location.replace(`http://localhost:8000/`);
+                    }, 1000) 
+                }
+            }catch(err){ 
+                console.log(err)
+            }
+        }else{
+            new Noty({
+                type: 'error',
+                layout: 'topRight',
+                theme: 'sunset',
+                timeout: 700,
+                text: 'Fields missing',
+            }).show();
+
+            setTimeout( () => {
+                window.location.replace(`http://localhost:8000/`);
+            }, 1000)
         }
     }
 
+// Login function
     async function userLogin(){
         let email = document.querySelector('#login_email').value;
         let password = document.querySelector('#login_pass').value;
 
-        var data = JSON.stringify({
-        "email": email,
-        "password": password
-        });
+        if(email != '' && password != ''){
 
-        var requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: data
-        };
+            var data = JSON.stringify({
+            "email": email,
+            "password": password
+            });
 
-        fetch("http://localhost:8000/api/auth/login", requestOptions)
-            .catch(error => console.log('error', error))
-            .then(response => {
-                if(response.ok){
+            var requestOptions = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: data
+            };
+
+            fetch("http://localhost:8000/api/auth/login", requestOptions)
+                .catch(error => {
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: error.message,
+                    }).show(); 
+                    console.log('error', error)
+                })
+                .then(response => {
                     return response.json()
-                }
+                })
+                .then(result => {
 
-                throw new Error('something wrong')
-            })
-            .then(result => {
-                var currentMonth = new Date().toLocaleString('default', {month: 'long'})
-                // alert('login success')
-                window.location.replace(`/dashboard?size=4&page=0&filter=${currentMonth}`);
-            })
+                    if(!result.message){
+                        var currentMonth = new Date().toLocaleString('default', {month: 'long'})
+                        new Noty({
+                                type: 'success',
+                                layout: 'topRight',
+                                theme: 'sunset',
+                                timeout: 700,
+                                text: 'Logging in...',
+                            }).show();
+
+                        setTimeout( () => {
+                            window.location.replace(`/dashboard?size=4&page=0&filter=${currentMonth}`);
+                        }, 1000)
+
+                    }else{
+                        new Noty({
+                            type: 'error',
+                            layout: 'topRight',
+                            theme: 'sunset',
+                            timeout: 700,
+                            text: result.message,
+                        }).show();
+
+                    setTimeout( () => {
+                        window.location.replace(`/`);
+                    }, 1000)
+                    }
+                })
+        }else{
+            new Noty({
+                type: 'error',
+                layout: 'topRight',
+                theme: 'sunset',
+                timeout: 1000,
+                text: 'Fields missing',
+            }).show();
+
+            setTimeout( () => {
+                window.location.replace(`http://localhost:8000/`);
+            }, 1000)
+        }    
     }
 </script>

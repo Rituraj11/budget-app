@@ -3,6 +3,7 @@ const db = require('../dbconfig')
 const Budget = db.budget
 const Expense = db.expense
 
+//  Add income of loggedin user
 const addIncome = async (req, res) => {
 
     if( req.body.expense_name == undefined || req.body.amount == undefined || req.body.spend_date == undefined ){
@@ -25,6 +26,8 @@ const addIncome = async (req, res) => {
     }
 }
 
+
+// Add Expense of loggedin user
 const addExpense = async (req, res) => {
     if( req.body.expense_name == undefined || req.body.amount == undefined || req.body.spend_date == undefined ){
         return res.status(403).send({message:'Data missing'})
@@ -46,6 +49,7 @@ const addExpense = async (req, res) => {
     }
 }
 
+// Delete expenditure of loggedin user
 const deleteExpenditure = async (req, res) => {
     const expenseId = req.params.id
 
@@ -66,6 +70,7 @@ const deleteExpenditure = async (req, res) => {
     }
 }
 
+// Get all expenditure of loggedin user
 const getAllExpenditure = async (req, res) => {
     const budgetId = req.params.budgetId
 

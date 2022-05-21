@@ -4,9 +4,10 @@ const User = db.user
 const Budget = db.budget
 const Category = db.category
 
+// Create Budget of loggedin user
 const createBudget = async (req, res) => {
     if(req.body.budget_name == undefined || req.body.budget_amount == undefined || req.body.budget_month == undefined){
-        return res.send({message: 'Data missing'})
+        return res.status(400).send({message: 'Data missing'})
     }
 
     try{
@@ -21,11 +22,12 @@ const createBudget = async (req, res) => {
         return res.status(201).send({message: 'Budget Created'})
 
     }catch(err){
-        return res.send({message: err})
+        return res.status(400).json({message: err})
     }
 
 }
 
+// Get Budget by id of loggedin user
 const getBudget = async (req, res) => {
     var budgetId = req.params.id
 
@@ -49,10 +51,11 @@ const getBudget = async (req, res) => {
         return res.status(404).send({message: 'Budget not found'})
 
     }catch(err){
-        return res.send({message: err})
+        return res.status(400).json({message: err})
     }
 }
 
+// Get all budget of loggedin user
 const getAllBudgets = async (req, res) => {
 
     console.log(req.query)
@@ -85,7 +88,7 @@ const getAllBudgets = async (req, res) => {
             return res.status(404).send({message: 'Budget not found'})
     
         }catch(err){
-            return res.send({message: err})
+            return res.status(400).json({message: err})
         }
     }else{
 
@@ -110,12 +113,13 @@ const getAllBudgets = async (req, res) => {
             return res.status(404).send({message: 'Budget not found'})
     
         }catch(err){
-            return res.send({message: err})
+            return res.status(400).json({message: err})
         }
     }
 
 }
 
+// Update budget by id of loggedin user
 const updateBudget = async (req, res) => {
     const budgetId = req.params.id
 
@@ -152,25 +156,42 @@ const updateBudget = async (req, res) => {
 
         return res.status(404).send({message: 'Budget doesnot exist.'})
     }catch(err){
-        return res.status(403).send({message: err})
+        return res.status(400).send({message: err})
     }
 }
 
+// Delete budget by id of loggedin user
 const deleteBudget = async (req, res) => {
 
     var budgetId = req.params.id
+    console.log(budgetId)
     try{
-        const result = await Budget.destroy({
-            where:{
+        const budgetExists = await Budget.findOne({
+            where: {
                 id: budgetId,
                 userId: req.user.id
-            }
+            },
+            include:[{
+                model: User
+            },{
+                model: Category
+            }]
         })
 
-        return res.status(204).send({message:'deleted'})
+        if(budgetExists){
+            const result = await Budget.destroy({
+                where:{
+                    id: budgetId,
+                    userId: req.user.id
+                }
+            })
+    
+            return res.status(204).json({message: 'Budget Deleted'})
+        }
 
+        return res.status(404).send({message: 'Budget doesnot exist.'})
     }catch(err){
-        return res.send({message: err})
+        return res.status(400).json({message: err})
     }
 }
 

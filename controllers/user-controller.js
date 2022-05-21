@@ -1,9 +1,8 @@
 const db = require('../dbconfig')
 
 const User = db.user
-const Budget = db.budget
-const Category = db.category
 
+// Get User data by id
 const userData = async (req, res) => {
     var userId = req.user.id
     
@@ -21,7 +20,7 @@ const userData = async (req, res) => {
         
         return res.status(401).send({message: 'User not found'})
     }catch(err){
-        return res.send({message: err})
+        return res.status(400).json({message: err})
     }
 }
 

@@ -29,11 +29,14 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
+// Table Schema
 db.user = require('./models/user-model')(sequelize,DataTypes)
 db.budget = require('./models/budget-model')(sequelize,DataTypes)
 db.category = require('./models/category-model')(sequelize,DataTypes)
 db.expense = require('./models/expense-model')(sequelize,DataTypes)
 
+
+// Table Relationships
 db.user.hasMany(db.budget)
 db.budget.belongsTo(db.user)
 

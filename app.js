@@ -18,8 +18,6 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// app.use('/view', express.static('./view'))
-
 app.set('view engine', 'ejs')
 app.use(expressEjsLayout)
 
@@ -30,7 +28,7 @@ app.use('/api/budget', budget)
 app.use('/api/category', category)
 app.use('/api/expense', expense)
 
-const port = process.env.PORT || 8000
+const port = process.env.APP_PORT || 8000
 
 app.listen(port, () => {
     console.log(`Listening on ${port}`)

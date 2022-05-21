@@ -11,6 +11,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
   
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.js"></script>
+
+    <!-- Noty JS urls -->
+    <script src="https://cdn.tutorialjinni.com/noty/3.1.4/noty.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.tutorialjinni.com/noty/3.1.4/noty.css" />
+
     <Style>
         td:first-child + td{
             color: rgb(41, 206, 41);
@@ -167,6 +172,7 @@
     var userData = new Object;
     var budgetData = new Object;
 
+    // Getting all cookies data
     let cookieTokens = document.cookie
                                 .split(';')
                                 .map( cookie => cookie.split('='))
@@ -177,11 +183,11 @@
 
     var paramArr = window.location.search.split('?').slice(1)[0].split('&')
 
+    // Getting all params data
     var paramsObj = paramArr.map( data => data.split('='))
             .reduce( (acc, [key, value]) => ({...acc, [key.trim()]: decodeURIComponent(value)}),{})
 
 
-    console.log(paramsObj)
     var uId = paramsObj.uid      
 
     if(token == undefined && paramsObj.sharing == false){
@@ -189,8 +195,8 @@
         console.log({'message': 'Access denied'})
     }
 
+    // Function to get logged in user data
     async function getUserInfo(){
-        console.log(uId)
         var requestOptions = {
             method: 'GET',
             headers: {
@@ -283,6 +289,7 @@
 
     window.onload = getUserInfo
 
+    // Get all expenditure data by budget id
     async function getAllExpense(budgetId){
         var expenseRequestData = {
             method: 'GET',
@@ -313,75 +320,167 @@
         return expenseData
     }
 
+    // Add income function
     async function addIncome(){
 
         const income_name = document.querySelector('#formGroupIncomeNameInput').value
         const income_amount = document.querySelector('#formGroupIncomeAmountInput').value
         const income_date = document.querySelector('#formGroupIncomeDateInput').value
 
-        try{
-            var incomeData = JSON.stringify({
-                "expense_name": income_name,
-                "amount": income_amount,
-                "spend_date": income_date,
-                "budgetId": budgetData.id
-            });
+        if(income_name != '' && income_amount != '' && income_date != ''){
 
-            var requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'auth-token': token,
-                    'uid': uId
-                },
-                body: incomeData
-            };
+            try{
+                var incomeData = JSON.stringify({
+                    "expense_name": income_name,
+                    "amount": income_amount,
+                    "spend_date": income_date,
+                    "budgetId": budgetData.id
+                });
 
-            await fetch("http://localhost:8000/api/expense/add-income", requestOptions)
+                var requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token,
+                        'uid': uId
+                    },
+                    body: incomeData
+                };
 
-            location.reload()
-        }catch(err){
-            console.log(err)
+                let response = await fetch("http://localhost:8000/api/expense/add-income", requestOptions)
+
+                if(response.ok){
+                    new Noty({
+                        type: 'success',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Income Created',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000)
+                }else{
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Something wrong! Please retry',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000) 
+                }
+
+                // location.reload()
+            }catch(err){
+                console.log(err)
+            }
+        }else{
+            new Noty({
+                type: 'error',
+                layout: 'topRight',
+                theme: 'sunset',
+                timeout: 700,
+                text: 'Fields missing',
+            }).show();
+
+            setTimeout( () => {
+                location.reload()
+            }, 1000)
         }
     }
 
+    // Add Expense function
     async function addExpense(){
 
         const expense_name = document.querySelector('#formGroupExpenseNameInput').value
         const expense_amount = document.querySelector('#formGroupExpenseAmountInput').value
         const expense_date = document.querySelector('#formGroupExpenseDateInput').value
 
-        try{
-            var expenseData = JSON.stringify({
-                "expense_name": expense_name,
-                "amount": expense_amount,
-                "spend_date": expense_date,
-                "budgetId": budgetData.id
-            });
+        if(expense_name != '' && expense_amount != '' && expense_date != ''){
 
-            var requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'auth-token': token,
-                    'uid': uId
-                },
-                body: expenseData
-            };
+            try{
+                var expenseData = JSON.stringify({
+                    "expense_name": expense_name,
+                    "amount": expense_amount,
+                    "spend_date": expense_date,
+                    "budgetId": budgetData.id
+                });
 
-            await fetch("http://localhost:8000/api/expense/add-expense", requestOptions)
+                var requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token,
+                        'uid': uId
+                    },
+                    body: expenseData
+                };
 
-            location.reload()
-        }catch(err){
-            console.log(err)
+                let response = await fetch("http://localhost:8000/api/expense/add-expense", requestOptions)
+
+                if(response.ok){
+                    new Noty({
+                        type: 'success',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Expense Created',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000)
+                }else{
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Something wrong! Please retry',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000) 
+                }
+
+                // location.reload()
+            }catch(err){
+                console.log(err)
+            }
+        }else{
+            new Noty({
+                type: 'error',
+                layout: 'topRight',
+                theme: 'sunset',
+                timeout: 700,
+                text: 'Fields missing',
+            }).show();
+
+            setTimeout( () => {
+                location.reload()
+            }, 1000)
         }
     }
 
+    // Copy share url function
     function copyShareUrl(){
         let shareUrl = document.querySelector('#share-url-field').value
         navigator.clipboard.writeText(shareUrl)
-        alert('copied')
+        
+        new Noty({
+            type: 'alert',
+            layout: 'topRight',
+            theme: 'sunset',
+            timeout: 1000,
+            text: 'Share URL Copied',
+        }).show();
     }
 </script>
