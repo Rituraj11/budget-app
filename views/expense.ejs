@@ -194,9 +194,10 @@
 
     var uId = paramsObj.uid      
 
-    console.log(paramsObj['sharing'])
+    console.log(paramsObj['sharing'] == 'true')
+    console.log(token  == undefined)
 
-    if(token == undefined && paramsObj['sharing'] == undefined){
+    if(token == undefined && paramsObj['sharing'] != 'true'){
         location.replace('/')
         console.log({'message': 'Access denied'})
     }
