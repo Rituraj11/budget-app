@@ -39,7 +39,10 @@
         <span class="navbar-brand mb-0 h1" style="font-family: 'Inter';font-size:xx-large;">YourBudget</span>
         <!-- <span class="navbar-text"> -->
             <!-- Profile -->
-            <span id="user_name"></span>
+            <span>
+                <span id="user_name" style="display: inline-block; margin: 0 5px;"></span>
+                <span style="display: inline-block; margin: 0 5px;"><a href="#" onclick="logout()">Logout</a></span>
+            </span>
         <!-- </span> -->
     </nav>
 
@@ -538,6 +541,38 @@
         var filteredMonth = document.querySelector('#monthFIlterInput').value
 
         window.location.replace(`http://localhost:8000/dashboard?size=4&page=0&filter=${filteredMonth}`);
+    }
+
+    // Logout function
+    async function logout(){
+        try{
+            var requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'auth-token': token
+                    }
+            }
+            let response = await fetch('http://localhost:8000/api/auth/logout', requestOptions)
+
+            if(response.ok){
+                new Noty({
+                    type: 'success',
+                    layout: 'topRight',
+                    theme: 'sunset',
+                    timeout: 700,
+                    text: 'Logout successful',
+                }).show();
+                
+            }
+
+            setTimeout( () => {
+                location.replace('/')
+            }, 1000)
+        }catch(err){
+            console.log(err)
+        }
     }
 
 </script>

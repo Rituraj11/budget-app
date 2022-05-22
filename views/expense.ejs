@@ -84,7 +84,7 @@
                                 <th scope="col">Income</th>
                                 <th scope="col">Expense</th>
                                 <th scope="col">Spend/Income Date</th>
-                                <!-- <th scope="col">Action</th> -->
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                         </table>
@@ -308,6 +308,10 @@
         let response = await fetch(`http://localhost:8000/api/expense/${budgetId}`, expenseRequestData)
         var expenseData = await response.json()
 
+        expenseData.forEach( dataRow => {
+            dataRow.delButton = `<button class="btn btn-danger" onClick="expenseDelete(${dataRow.id})">Delete</button>`;
+        })
+
         $('#budgetTable').DataTable({
             data: expenseData,
             order: [[3, 'desc']],
@@ -316,7 +320,8 @@
                 { data: "expense_name" },
                 { data: "income" },
                 { data: "expense" },
-                { data: "spend_date" }
+                { data: "spend_date" },
+                { data: "delButton" }
             ],
             responsive: true
         })
@@ -474,6 +479,53 @@
         }
     }
 
+
+    // Delete expenses
+    async function expenseDelete(budgetId){
+        try{
+            var requestOptions = {
+            method: 'DELETE',
+            headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'auth-token': token,
+                },
+            body: ''
+
+            };
+
+            let response = await fetch(`http://localhost:8000/api/expense/${budgetId}`, requestOptions)
+
+            if(response.ok){
+                    new Noty({
+                        type: 'success',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Expense Deleted',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000)
+                }else{
+                    new Noty({
+                        type: 'error',
+                        layout: 'topRight',
+                        theme: 'sunset',
+                        timeout: 1000,
+                        text: 'Something wrong! Please retry',
+                    }).show();
+
+                    setTimeout( () => {
+                        location.reload()
+                    }, 1000) 
+                }
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     // Copy share url function
     function copyShareUrl(){
         let shareUrl = document.querySelector('#share-url-field').value
@@ -518,4 +570,5 @@
             console.log(err)
         }
     }
+
 </script>
